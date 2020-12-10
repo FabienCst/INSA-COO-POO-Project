@@ -29,6 +29,6 @@ application {
     mainClass = 'bavard.App'
 }
 
-run{
+run {
     standardInput = System.in
 }

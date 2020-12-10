@@ -1,16 +1,10 @@
 package bavard.user;
 
-import bavard.gui.ConsoleGUI;
+import java.net.InetAddress;
 
 public class UserIdentifier {
 
-    private ConsoleGUI c;
-
-    public UserIdentifier() {
-        c = new ConsoleGUI();
-    }
-
-    public String identifyUser() {
-        return c.choosePseudonym();
+    public static User identifyUser() {
+        return new User(null, "abc-123-woo", InetAddress.getLoopbackAddress());
     }
 }
