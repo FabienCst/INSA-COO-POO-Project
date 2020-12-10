@@ -3,10 +3,15 @@
  */
 package bavard;
 
+import bavard.user.UserIdentifier;
+
+import java.util.Scanner;
+
 public class App {
 
     public String getGreeting() {
-        return "Hello World!";
+        UserIdentifier ui = new UserIdentifier();
+        return ui.identifyUser();
     }
 
     public static void main(String[] args) {
