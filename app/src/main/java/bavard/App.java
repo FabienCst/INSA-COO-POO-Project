@@ -9,10 +9,7 @@ import bavard.ui.ConsoleUI;
 
 public class App {
     public static void main(String[] args) {
-        System.out.println("App started");
-
         User user = UserIdentifier.identifyUser();
-        System.out.println("User identified");
 
         NetworkModel nm = new NetworkModel();
         NetworkController nc = new NetworkController(nm);
