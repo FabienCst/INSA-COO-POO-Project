@@ -11,14 +11,14 @@
 - MainController
   - [ ] Start-up sequence
 - NetworkController
-  - [ ] Start-up sequence
+  - [x] Start-up sequence
 - User interface (console)
   - [ ] Request pseudonym until a valid one is given
   - [ ] Show a proper CLI interface (run in loop, show menu of choices, ...)
   - [ ] Get list of active users
 - User interface (graphical) _coming soon to a screen near you ..._
 - User
-  - [ ] Change pseusonym
+  - [ ] Change pseudonym
   - [ ] <1> Abstract the User's address to be identified differently depending on the environment (live network vs. localhost)
 - Chat
   - [ ] Accept an incoming chat connection
