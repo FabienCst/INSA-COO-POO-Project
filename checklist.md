@@ -7,7 +7,7 @@
 - App
   - [x] Start-up sequence
   - [ ] Notify of your absence when shutting down
-  - [ ] Make it possible to run several clients on the same computer (see <1> under User)
+  - [x] Make it possible to run several clients on the same computer
 - MainController
   - [ ] Start-up sequence
 - NetworkController
@@ -19,7 +19,6 @@
 - User interface (graphical) _coming soon to a screen near you ..._
 - User
   - [ ] Change pseudonym
-  - [ ] <1> Abstract the User's address to be identified differently depending on the environment (live network vs. localhost)
 - Chat
   - [ ] Accept an incoming chat connection
   - [ ] Start an active chat session

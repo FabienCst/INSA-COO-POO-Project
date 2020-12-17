@@ -12,7 +12,7 @@ public class App {
         User user = UserIdentifier.identifyUser();
 
         NetworkModel nm = new NetworkModel();
-        NetworkController nc = new NetworkController(nm);
+        NetworkController nc = new NetworkController(user, nm);
         MainController mc = new MainController(user, nc);
         UserInterface ui = new ConsoleUI(user, nc, mc);
         nc.setUserInterface(ui);

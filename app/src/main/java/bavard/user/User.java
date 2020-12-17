@@ -1,12 +1,16 @@
 package bavard.user;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 
-public class User {
+public class User implements Serializable {
 
     private String pseudonym;
     private String uid;
     private InetAddress address;
+
+    // Required to distinguish different users when testing on a single computer
+    private int udpPort = 5555;
 
     public User(String pseudonym, String uid, InetAddress address) {
         this.pseudonym = pseudonym;
@@ -37,4 +41,7 @@ public class User {
     public void setAddress(InetAddress address) {
         this.address = address;
     }
+
+    public int getUdpPort() { return this.udpPort; }
+    public void setUdpPort(int udpPort) { this.udpPort = udpPort; }
 }
