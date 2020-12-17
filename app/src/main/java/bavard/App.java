@@ -11,7 +11,7 @@ public class App {
     public static void main(String[] args) {
         User user = UserIdentifier.identifyUser();
 
-        NetworkModel nm = new NetworkModel();
+        NetworkModel nm = new NetworkModel(user);
         NetworkController nc = new NetworkController(user, nm);
         MainController mc = new MainController(user, nc);
         UserInterface ui = new ConsoleUI(user, nc, mc);
