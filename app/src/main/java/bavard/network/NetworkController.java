@@ -13,6 +13,7 @@ public class NetworkController {
     private User user;
     private NetworkModel nm;
     private NetworkListener nl;
+    private UserInterface ui;
 
     public NetworkController(User user, NetworkModel nm) {
         this.user = user;
@@ -29,7 +30,33 @@ public class NetworkController {
     }
 
     public void handleNetworkEvent(NetworkEvent event) {
-        System.out.println("Handling appropriately ...");
+        User payloadUser = event.getPayload();
+
+        switch (event.getType()) {
+            case WHO_IS_OUT_THERE:  // Existing users letting a new user know they are present
+                replyNetworkEvent(
+                        new NetworkEvent(NetworkEventType.RESPOND_PRESENCE, this.user),
+                        payloadUser
+                );
+                break;
+
+            case RESPOND_PRESENCE:  // New user adding existing users responding to their WHO_IS_OUT_THERE
+            case NOTIFY_PRESENCE:   // Existing users adding a new (verified-pseudonym) user
+                nm.addActiveUser(payloadUser);
+                break;
+
+            case CHECK_PSEUDONYM:
+                if (nm.pseudonymIsValid(payloadUser)) {
+                    ui.acceptPseudonym();
+                } else {
+                    ui.rejectPseudonym();
+                }
+                break;
+
+            default:
+                // Ignore
+                break;
+        }
     }
 
     public void broadcastNetworkEvent(NetworkEvent event) {
@@ -63,11 +90,26 @@ public class NetworkController {
         }
     }
 
-    public void replyNetworkEvent(NetworkEvent event) {
+    public void replyNetworkEvent(NetworkEvent event, User to) {
+        try {
+            // Create UDP client
+            DatagramSocket ds = new DatagramSocket();
 
+            byte[] serializedNetworkEvent = NetworkEvent.serialize(event);
+
+            DatagramPacket dp = new DatagramPacket(
+                    serializedNetworkEvent,
+                    serializedNetworkEvent.length,
+                    to.getAddress(),
+                    to.getUdpPort()
+            );
+
+            ds.send(dp);
+            ds.close();
+        } catch (IOException ioe) {
+            // Ignore and move on to better things
+        }
     }
 
-    public void setUserInterface(UserInterface ui) {
-
-    }
+    public void setUserInterface(UserInterface ui) { this.ui = ui; }
 }
