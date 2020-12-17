@@ -44,4 +44,24 @@ public class User implements Serializable {
 
     public int getUdpPort() { return this.udpPort; }
     public void setUdpPort(int udpPort) { this.udpPort = udpPort; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        if (udpPort != user.udpPort) return false;
+        if (!uid.equals(user.uid)) return false;
+        return address.equals(user.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uid.hashCode();
+        result = 31 * result + address.hashCode();
+        result = 31 * result + udpPort;
+        return result;
+    }
 }
