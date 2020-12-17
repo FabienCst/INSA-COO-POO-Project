@@ -13,7 +13,7 @@
 - NetworkController
   - [x] Start-up sequence
 - User interface (console)
-  - [ ] Request pseudonym until a valid one is given
+  - [x] Request pseudonym until a valid one is given
   - [ ] Show a proper CLI interface (run in loop, show menu of choices, ...)
   - [ ] Get list of active users
 - User interface (graphical) _coming soon to a screen near you ..._
