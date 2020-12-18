@@ -8,6 +8,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.lang.Runtime;
+import java.util.ArrayList;
 
 public class NetworkController {
 
@@ -123,4 +124,6 @@ public class NetworkController {
     }
 
     public void setUserInterface(UserInterface ui) { this.ui = ui; }
+
+    public ArrayList<User> getActiveUsers() { return this.nm.getActiveUsers(); }
 }

@@ -14,6 +14,8 @@ public class NetworkModel {
         this.user = user;
     }
 
+    public ArrayList<User> getActiveUsers() { return activeUsers; }
+
     public void addActiveUser(User user) {
         // Don't add yourself to the list of active users
         if (user.equals(this.user)) {
@@ -48,9 +50,4 @@ public class NetworkModel {
             return pseudonymIsValid;
         }
     }
-
-    public void changePseudonym(User user) {
-
-    }
-
 }
