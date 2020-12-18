@@ -31,7 +31,7 @@ public class NetworkModel {
     }
 
     public void removeActiveUser(User user) {
-
+        synchronized (lock) { activeUsers.remove(user); }
     }
 
     public boolean pseudonymIsValid(User user) {

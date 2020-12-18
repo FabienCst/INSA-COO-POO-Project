@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.lang.Runtime;
 
 public class NetworkController {
 
@@ -18,6 +19,12 @@ public class NetworkController {
     public NetworkController(User user, NetworkModel nm) {
         this.user = user;
         this.nm = nm;
+
+        // Before shutting down let everyone know you will no longer be active on the network
+        Thread notifyOfDeparture = new Thread(() -> {
+            broadcastNetworkEvent(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, this.user));
+        });
+        Runtime.getRuntime().addShutdownHook(notifyOfDeparture);
 
         // UDP server to receive network events
         this.nl = new NetworkListener(this, this.user);
@@ -43,6 +50,10 @@ public class NetworkController {
             case RESPOND_PRESENCE:  // New user adding existing users responding to their WHO_IS_OUT_THERE
             case NOTIFY_PRESENCE:   // Existing users adding a new (verified-pseudonym) user
                 nm.addActiveUser(payloadUser);
+                break;
+
+            case NOTIFY_ABSENCE:
+                nm.removeActiveUser(payloadUser);
                 break;
 
             case CHECK_PSEUDONYM:
