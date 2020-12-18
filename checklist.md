@@ -6,7 +6,7 @@
 
 - App
   - [x] Start-up sequence
-  - [ ] Notify of your absence when shutting down
+  - [x] Notify of your absence when shutting down
   - [x] Make it possible to run several clients on the same computer
 - MainController
   - [ ] Start-up sequence
@@ -14,11 +14,11 @@
   - [x] Start-up sequence
 - User interface (console)
   - [x] Request pseudonym until a valid one is given
-  - [ ] Show a proper CLI interface (run in loop, show menu of choices, ...)
-  - [ ] Get list of active users
+  - [x] Show a proper CLI interface (run in loop, show menu of choices, ...)
+  - [x] Get list of active users
 - User interface (graphical) _coming soon to a screen near you ..._
 - User
-  - [ ] Change pseudonym
+  - [x] Change pseudonym
 - Chat
   - [ ] Accept an incoming chat connection
   - [ ] Start an active chat session
@@ -26,9 +26,9 @@
   - [ ] Receive a text message
   - [ ] Send a text message
 - Network
-  - [ ] Respond to a "Who is out there?" request
-  - [ ] Handle a notification of presence
-  - [ ] Handle a notification of absence
+  - [x] Respond to a "Who is out there?" request
+  - [x] Handle a notification of presence
+  - [x] Handle a notification of absence
 - Data store
   - [ ] Add and configure SQLite database
   - [ ] Implement MessageStore interface for the database
