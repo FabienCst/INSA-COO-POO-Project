@@ -9,3 +9,6 @@ build
 
 # OS specific
 .DS_Store
+
+# SQLite database
+*.db
