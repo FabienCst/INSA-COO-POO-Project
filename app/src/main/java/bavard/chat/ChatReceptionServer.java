@@ -1,5 +1,7 @@
 package bavard.chat;
 
+import bavard.user.User;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -10,29 +12,23 @@ import java.nio.charset.StandardCharsets;
 public class ChatReceptionServer implements Runnable {
 
     private Socket link;
+    private User user;
 
-    public ChatReceptionServer() {
-
+    public ChatReceptionServer(User user) {
+        this.user = user;
     }
 
     @Override
     public void run() {
-        System.out.println("Thread started");
-        int port = 2000;
-        boolean availablePortfound = false;
-        while(!availablePortfound){
-            try {
-                ServerSocket ss = new ServerSocket(port);
-                availablePortfound = true;
-                while(true) {
-                    System.out.println("Awaiting connection");
-                    Socket link = ss.accept();
-                    new Thread(new ChatReceptionHandler(link)).start();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            ServerSocket ss = new ServerSocket(user.getTcpPort());
+            System.out.println("Awaiting connection on port "+user.getTcpPort());
+            while(true) {
+                Socket link = ss.accept();
+                new Thread(new ChatReceptionHandler(link)).start();
             }
-            port++;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

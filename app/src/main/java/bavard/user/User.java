@@ -12,6 +12,12 @@ public class User implements Serializable {
     // Required to distinguish different users when testing on a single computer
     private int udpPort = 5555;
 
+    private int tcpPort;
+
+    public User() {
+
+    }
+
     public User(String pseudonym, String uid, InetAddress address) {
         this.pseudonym = pseudonym;
         this.uid = uid;
@@ -43,7 +49,16 @@ public class User implements Serializable {
     }
 
     public int getUdpPort() { return this.udpPort; }
+
     public void setUdpPort(int udpPort) { this.udpPort = udpPort; }
+
+    public int getTcpPort() {
+        return tcpPort;
+    }
+
+    public void setTcpPort(int tcpPort) {
+        this.tcpPort = tcpPort;
+    }
 
     @Override
     public boolean equals(Object o) {

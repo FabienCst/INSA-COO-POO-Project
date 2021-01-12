@@ -2,7 +2,7 @@ package bavard.chat;
 
 import bavard.user.User;
 
-import java.io.Serializable;
+import java.io.*;
 import java.time.LocalDateTime;
 
 public class TextMessage extends Message implements Serializable {
@@ -21,4 +21,5 @@ public class TextMessage extends Message implements Serializable {
     public void setText(String text) {
         this.text = text;
     }
+
 }

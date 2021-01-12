@@ -1,7 +1,10 @@
 package bavard.ui;
 
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import bavard.chat.Message;
+import bavard.chat.TextMessage;
 import bavard.network.NetworkEvent;
 import bavard.network.NetworkEventType;
 import bavard.user.User;
@@ -14,9 +17,12 @@ import bavard.user.UserActionType;
 public class ConsoleUI implements UserInterface {
 
     private User user;
+    private User recipient;
     private NetworkController nc;
     private MainController mc;
 
+    private static ConsoleUI instance;
+    private boolean inChatSession = false;
     private boolean validPseudonym;
     private boolean waitingForPseudonymCheck;
     private final Object lock = new Object();
@@ -26,6 +32,19 @@ public class ConsoleUI implements UserInterface {
         this.user = user;
         this.nc = nc;
         this.mc = mc;
+        this.instance = this;
+    }
+
+    public boolean isInChatSession() {
+        return inChatSession;
+    }
+
+    public void setInChatSession(boolean inChatSession) {
+        this.inChatSession = inChatSession;
+    }
+
+    public static ConsoleUI getInstance() {
+        return instance;
     }
 
     @Override
@@ -80,17 +99,28 @@ public class ConsoleUI implements UserInterface {
     }
 
     @Override
+    public void startSession() {
+        synchronized (lock) {
+            new Thread(() -> {
+                mc.handleUserAction(
+                        new UserAction(UserActionType.START_CHAT_SESSION, new UserActionPayload(this.recipient))
+                );
+            }).start();
+        }
+    }
+
+    @Override
     public void showUI() {
         System.out.println("Hello, " + user.getPseudonym() + "!");
 
         Scanner input = new Scanner(System.in);
-        boolean inChatSession = false;
         boolean needToQuit = false;
         while (!needToQuit) {
             System.out.println("Actions: (enter the letter of the action you want to run)");
             if (!inChatSession) { System.out.println("    <s> Show active users"); }
             if (!inChatSession) { System.out.println("    <c> Start chat session with ..."); }
             if (inChatSession) { System.out.println("    <e> End current chat session"); }
+            if (inChatSession) { System.out.println("    <m> Send messages"); }
             System.out.println("    <p> Change pseudonym");
             System.out.println("    <q> Quit");
 
@@ -109,13 +139,45 @@ public class ConsoleUI implements UserInterface {
                 case "c":
                     System.out.println("Enter the pseudonym of the person you want to talk to: ");
                     String chatUser = input.nextLine();
-                    System.out.println("*Now chatting with " + chatUser + "*");
-                    inChatSession = true;
+                    boolean chatUserExist = false;
+                    for (User u : nc.getActiveUsers()) {
+                        if (u.getPseudonym().equals(chatUser)) {
+                            chatUserExist = true;
+                            this.recipient = u;
+                            break;
+                        }
+                    }
+                    if (chatUserExist) {
+                        System.out.println("*Now chatting with " + chatUser + "*");
+                        inChatSession = true;
+                        startSession();
+                    }
+                    else {
+                        System.out.println("The user you are trying to reach is disconnected or unknown");
+                    }
                     break;
 
                 case "e":
-                    System.out.println("Leaving chat session");
+                    System.out.println("*Leaving chat session*");
+                    mc.handleUserAction(
+                            new UserAction(UserActionType.END_CHAT_SESSION, new UserActionPayload(this.user)));
                     inChatSession = false;
+                    break;
+
+                case "m":
+                    System.out.println("Tap a message and press Enter to send it (<END> to stop)");
+                    String output = "";
+                    TextMessage msg = null;
+                    while(!output.equals("END")) {
+                        output = input.nextLine();
+                        if (!output.equals("END")) {
+                            LocalDateTime now = LocalDateTime.now();
+                            msg = new TextMessage(user,recipient,now,output);
+                            mc.handleUserAction(
+                                    new UserAction(UserActionType.SEND_MESSAGE, new UserActionPayload(recipient,msg)));
+                        }
+                    }
+                    inChatSession = true;
                     break;
 
                 case "p":

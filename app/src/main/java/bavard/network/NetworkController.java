@@ -1,7 +1,13 @@
 package bavard.network;
 
+import bavard.MainController;
+import bavard.chat.ChatSessionController;
+import bavard.ui.ConsoleUI;
 import bavard.ui.UserInterface;
 import bavard.user.User;
+import bavard.user.UserAction;
+import bavard.user.UserActionPayload;
+import bavard.user.UserActionType;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -55,6 +61,14 @@ public class NetworkController {
 
             case NOTIFY_ABSENCE:
                 nm.removeActiveUser(payloadUser);
+                ConsoleUI cui = ConsoleUI.getInstance();
+                MainController mc = MainController.getInstance();
+                ChatSessionController activeCSC = mc.getActiveChatSessionController();
+                if (payloadUser.equals(activeCSC.getRecipient())) {
+                    mc.handleUserAction(
+                            new UserAction(UserActionType.END_CHAT_SESSION, new UserActionPayload(this.user)));
+                    cui.setInChatSession(false);
+                }
                 break;
 
             case CHECK_PSEUDONYM:

@@ -8,16 +8,15 @@ public class ChatSession {
 
     private User initiator;
     private User recipient;
-    private ArrayList<Message> messageHistory;
+    private ArrayList<TextMessage> messageHistory = new ArrayList<TextMessage>();
 
-    public ChatSession(User initiator, User recipient, ArrayList<Message> messageHistory) {
+    public ChatSession(User initiator, User recipient) {
         this.initiator = initiator;
         this.recipient = recipient;
-        this.messageHistory = messageHistory;
     }
 
-    public void addToMessageHistory(Message msg) {
-
+    public void addToMessageHistory(TextMessage msg) {
+        messageHistory.add(msg);
     }
 
     public void loadMessageHistory() {

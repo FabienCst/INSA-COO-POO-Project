@@ -12,7 +12,9 @@ public class Message implements Serializable {
     private LocalDateTime date; //private Timestamp date;
 
     public Message(User from, User to, LocalDateTime date) {
-
+        this.from = from;
+        this.to = to;
+        this.date = date;
     }
 
     public User getFrom() {
