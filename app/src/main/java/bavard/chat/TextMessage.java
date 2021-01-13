@@ -2,24 +2,17 @@ package bavard.chat;
 
 import bavard.user.User;
 
-import java.io.*;
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.time.OffsetDateTime;
 
 public class TextMessage extends Message implements Serializable {
 
     private String text;
 
-    public TextMessage(User from, User to, LocalDateTime date, String text){
-        super(from, to, date);
+    public TextMessage(User from, User to, OffsetDateTime when, String text){
+        super(from, to, when);
         this.text = text;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
+    public String getText() { return text; }
 }

@@ -30,7 +30,7 @@
   - [x] Handle a notification of presence
   - [x] Handle a notification of absence
 - Data store
-  - [ ] Add and configure SQLite database
+  - [x] Add and configure SQLite database
   - [ ] Implement MessageStore interface for the database
 
 ### Project
