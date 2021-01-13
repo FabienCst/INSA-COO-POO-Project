@@ -1,6 +1,6 @@
 package bavard.ui;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Scanner;
 
 import bavard.chat.Message;
@@ -171,7 +171,7 @@ public class ConsoleUI implements UserInterface {
                     while(!output.equals("END")) {
                         output = input.nextLine();
                         if (!output.equals("END")) {
-                            LocalDateTime now = LocalDateTime.now();
+                            OffsetDateTime now = OffsetDateTime.now();
                             msg = new TextMessage(user,recipient,now,output);
                             mc.handleUserAction(
                                     new UserAction(UserActionType.SEND_MESSAGE, new UserActionPayload(recipient,msg)));

@@ -29,8 +29,8 @@ public class ChatSessionController {
         cs.addToMessageHistory(msg);
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-        System.out.println(msg.getFrom().getPseudonym()+
-                " at "+dtf.format(msg.getDate())+" : "+msg.getText());
+        System.out.println(msg.getSender().getPseudonym()+
+                " at "+dtf.format(msg.getDatetime())+" : "+msg.getText());
     }
 
     public void sendMessage(TextMessage msg) {
@@ -44,7 +44,7 @@ public class ChatSessionController {
             os.close();
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-            System.out.println("me at "+dtf.format(msg.getDate())+" : "+msg.getText());
+            System.out.println("me at "+dtf.format(msg.getDatetime())+" : "+msg.getText());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

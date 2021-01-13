@@ -6,17 +6,15 @@ import bavard.db.MessageStoreDatabase;
 
 import java.io.*;
 import java.net.Socket;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class ChatReceptionHandler implements Runnable {
 
     final Socket link;
-    private MessageStoreDatabase msdb;
+    private MessageStore ms;
 
     public ChatReceptionHandler(Socket link) {
         this.link = link;
-        this.msdb = MessageStoreDatabase.getInstance();
+        this.ms = MessageStoreDatabase.getInstance();
     }
 
     @Override
@@ -36,12 +34,12 @@ public class ChatReceptionHandler implements Runnable {
                     MainController mc = MainController.getInstance();
                     ChatSessionController activeCSC = mc.getActiveChatSessionController();
 
-                    if (activeCSC == null) msdb.saveMessage(tmsg);
+                    if (activeCSC == null) ms.saveMessage(tmsg);
                     else {
-                        if (tmsg.getFrom().equals(activeCSC.getRecipient())) {
+                        if (tmsg.getSender().equals(activeCSC.getRecipient())) {
                             activeCSC.handleReceivedMessage(tmsg);
                         }
-                        else msdb.saveMessage(tmsg);
+                        else ms.saveMessage(tmsg);
                     }
                 }
             }

@@ -19,31 +19,7 @@ public class Message implements Serializable {
 
     public User getSender() { return sender; }
     public User getRecipient() { return recipient; }
-    public String getDatetime() { return datetime.toString(); }
-
-    public User getFrom() {
-        return from;
-    }
-
-    public void setFrom(User from) {
-        this.from = from;
-    }
-
-    public User getTo() {
-        return to;
-    }
-
-    public void setTo(User to) {
-        this.to = to;
-    }
-
-    public LocalDateTime getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
+    public OffsetDateTime getDatetime() { return datetime; }
 
     public static byte[] serialize(Message msg) {
         try {

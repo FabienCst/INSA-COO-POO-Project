@@ -48,13 +48,13 @@ public class MessageStoreDatabase implements MessageStore {
         PreparedStatement pstmt = connection.prepareStatement(sql);
         pstmt.setString(1, msg.getSender().getUid());
         pstmt.setString(2, msg.getRecipient().getUid());
-        pstmt.setString(3, msg.getDatetime());
+        pstmt.setString(3, msg.getDatetime().toString());
         pstmt.setString(4, "text");
         pstmt.setString(5, msg.getText());
 
         pstmt.execute();
 
-        System.out.println("You have new message(s) from "+msg.getFrom().getPseudonym());
+        System.out.println("You have new message(s) from "+msg.getSender().getPseudonym());
     }
 
     @Override
