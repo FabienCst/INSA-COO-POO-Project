@@ -9,12 +9,12 @@ import bavard.user.UserAction;
 import bavard.user.UserActionPayload;
 import bavard.user.UserActionType;
 
+import javafx.collections.ObservableList;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.lang.Runtime;
-import java.util.ArrayList;
 
 public class NetworkController {
 
@@ -22,10 +22,13 @@ public class NetworkController {
     private NetworkModel nm;
     private NetworkListener nl;
     private UserInterface ui;
+    private static NetworkController instance = null;
 
     public NetworkController(User user, NetworkModel nm) {
         this.user = user;
         this.nm = nm;
+
+        instance = this;
 
         // Before shutting down let everyone know you will no longer be active on the network
         Thread notifyOfDeparture = new Thread(() -> {
@@ -41,6 +44,10 @@ public class NetworkController {
         broadcastNetworkEvent(
                 new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, this.user)
         );
+    }
+
+    public static NetworkController getInstance() {
+        return instance;
     }
 
     public void handleNetworkEvent(NetworkEvent event) {
@@ -139,5 +146,5 @@ public class NetworkController {
 
     public void setUserInterface(UserInterface ui) { this.ui = ui; }
 
-    public ArrayList<User> getActiveUsers() { return this.nm.getActiveUsers(); }
+    public ObservableList<User> getActiveUsers() { return this.nm.getActiveUsers(); }
 }

@@ -5,21 +5,52 @@ import bavard.chat.ChatSessionController;
 import bavard.network.NetworkController;
 import bavard.network.NetworkEvent;
 import bavard.network.NetworkEventType;
+import bavard.ui.ChatViewController;
 import bavard.user.User;
 import bavard.user.UserAction;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MainController {
+public class MainController implements Initializable {
 
     private static MainController instance;
     private User user;
     private NetworkController nc;
     private ChatSessionController activeCSC = null;
 
+    @FXML
+    private AnchorPane mainWindow;
+
+    @FXML
+    private ListView<User> activeUserList;
+
+    @FXML
+    private HBox profile;
+
+    @FXML
+    private VBox chatView;
+
+    @FXML
+    private ChatViewController chatViewController;
+
+    @FXML
+    private AnchorPane pseudonymModal;
+
+    @FXML
+    private Label pseudonym;
+
     public MainController(User user, NetworkController nc) {
-        this.instance = this;
+        instance = this;
         this.user = user;
         this.nc = nc;
 
@@ -27,6 +58,8 @@ public class MainController {
         ChatReceptionServer crs = new ChatReceptionServer(user);
         crs.start();
     }
+
+    public MainController() {}
 
     public static MainController getInstance() {
         return instance;
@@ -63,5 +96,30 @@ public class MainController {
 
     public void handleReceivedMessage() {
 
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.nc = NetworkController.getInstance();
+        this.user = User.getInstance();
+        instance = this;
+        activeUserList.setItems(nc.getActiveUsers());
+        pseudonym.setText(user.getPseudonym());
+    }
+
+    public void setVisible() { mainWindow.setVisible(true); }
+
+    public void handleUserSelection(MouseEvent mouseEvent) {
+        User a = activeUserList.getSelectionModel().getSelectedItem();
+        chatViewController.setPseudonym(a.getPseudonym());
+        chatView.setVisible(true);
+    }
+
+    public void openPseudonymModal(ActionEvent actionEvent) {
+        pseudonymModal.setVisible(true);
+    }
+
+    public void setPseudonym(String newPseudonym) {
+        pseudonym.setText(newPseudonym);
     }
 }

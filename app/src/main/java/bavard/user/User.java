@@ -1,5 +1,7 @@
 package bavard.user;
 
+import javafx.beans.value.ObservableStringValue;
+
 import java.io.Serializable;
 import java.net.InetAddress;
 
@@ -8,6 +10,7 @@ public class User implements Serializable {
     private String pseudonym;
     private String uid;
     private InetAddress address;
+    private static User instance;
 
     // Required to distinguish different users when testing on a single computer
     private int udpPort = 5555;
@@ -22,7 +25,10 @@ public class User implements Serializable {
         this.pseudonym = pseudonym;
         this.uid = uid;
         this.address = address;
+        instance = this;
     }
+
+    public static User getInstance() { return instance; }
 
     public String getPseudonym() {
         return pseudonym;

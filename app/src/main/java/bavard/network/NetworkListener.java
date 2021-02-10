@@ -50,17 +50,19 @@ public class NetworkListener implements Runnable {
          * This is required for development on a single computer that has a single IP address.
          * The only reasonable way to distinguish different users is by their port number. */
         boolean validPort = false;
-        while (!validPort) {
+        while (!validPort) { // separate function using isPortAvailable (see slack) and int findAvailPort
             try {
                 ds = new DatagramSocket(port);
                 this.user.setUdpPort(port);
                 validPort = true;
+                // return ds
             } catch (SocketException se) {
                 port++;
             }
         }
 
-        return ds;
+        return ds; // return null
+        // https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/util/SocketUtils.java inspo
     }
 
     public void listen() {

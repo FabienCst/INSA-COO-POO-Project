@@ -8,6 +8,8 @@ import bavard.network.NetworkModel;
 import bavard.network.NetworkController;
 import bavard.ui.UserInterface;
 import bavard.ui.ConsoleUI;
+import bavard.ui.GraphicalUI;
+import javafx.application.Application;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,7 +25,12 @@ public class App {
         UserInterface ui = new ConsoleUI(user, nc, mc);
         nc.setUserInterface(ui);
 
-        ui.start();
+//        ui.start();
+        try {
+            Application.launch(GraphicalUI.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static int chooseTcpPort() {

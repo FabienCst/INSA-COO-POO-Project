@@ -1,20 +1,35 @@
 package bavard.network;
 
 import bavard.user.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
+import java.net.InetAddress;
 import java.util.ArrayList;
 
 public class NetworkModel {
 
     private User user;
-    private ArrayList<User> activeUsers = new ArrayList<User>();
+//    private ArrayList<User> activeUsers = new ArrayList<User>();
+    private ObservableList<User> activeUsers = FXCollections.observableList(new ArrayList<User>());
     private final Object lock = new Object();
+    private static NetworkModel instance;
 
     public NetworkModel(User user) {
         this.user = user;
+        instance = this;
     }
 
-    public ArrayList<User> getActiveUsers() { return activeUsers; }
+    public static NetworkModel getInstance() {
+        return instance;
+    }
+
+    //    public ArrayList<User> getActiveUsers() { return activeUsers; }
+    public ObservableList<User> getActiveUsers() {
+        addActiveUser(new User("Greg", "123", InetAddress.getLoopbackAddress()));
+        addActiveUser(new User("Derf", "321", InetAddress.getLoopbackAddress()));
+        addActiveUser(new User("Ommy", "145", InetAddress.getLoopbackAddress()));
+        return activeUsers; }
 
     public void addActiveUser(User user) {
         // Don't add yourself to the list of active users
