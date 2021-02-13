@@ -1,53 +1,55 @@
 package bavard.network;
 
-import bavard.MainController;
-import bavard.chat.ChatSessionController;
-import bavard.ui.ConsoleUI;
-import bavard.ui.UserInterface;
-import bavard.user.User;
-import bavard.user.UserAction;
-import bavard.user.UserActionPayload;
-import bavard.user.UserActionType;
+import bavard.chat.Message;
+import bavard.chat.ChatReceptionServer;
+import bavard.chat.ChatService;
+import bavard.user.*;
 
-import javafx.collections.ObservableList;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.lang.Runtime;
+import java.net.Socket;
 
-public class NetworkController {
+public class NetworkService {
 
-    private User user;
-    private NetworkModel nm;
-    private NetworkListener nl;
-    private UserInterface ui;
-    private static NetworkController instance = null;
+    private NetworkListener networkListener;
+    private ChatReceptionServer chatReceptionServer;
+    private ProxyConnection proxyConnection;
 
-    public NetworkController(User user, NetworkModel nm) {
-        this.user = user;
-        this.nm = nm;
+    private UserService userService;
+    private ChatService chatService;
 
-        instance = this;
+    public void init() {
+        // UDP server to receive network events
+        networkListener = new NetworkListener();
+        networkListener.injectNetworkService(this);
+        networkListener.listen();
+
+        // TCP server to receive chat messages
+        chatReceptionServer = new ChatReceptionServer();
+        chatReceptionServer.injectNetworkService(this);
+        chatReceptionServer.injectChatService(chatService);
+        chatReceptionServer.listen();
+
+        // TCP connection to proxy
+        proxyConnection = new ProxyConnection();
+        proxyConnection.injectNetworkService(this);
+        proxyConnection.injectChatService(chatService);
+        proxyConnection.connect();
 
         // Before shutting down let everyone know you will no longer be active on the network
         Thread notifyOfDeparture = new Thread(() -> {
-            broadcastNetworkEvent(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, this.user));
+            broadcast(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, userService.getCurrentUser()));
         });
         Runtime.getRuntime().addShutdownHook(notifyOfDeparture);
 
-        // UDP server to receive network events
-        this.nl = new NetworkListener(this, this.user);
-        this.nl.listen();
-
         // Start building a list of active users by asking the network, "Who is out there?"
-        broadcastNetworkEvent(
-                new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, this.user)
+        broadcast(
+                new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, userService.getCurrentUser())
         );
-    }
-
-    public static NetworkController getInstance() {
-        return instance;
     }
 
     public void handleNetworkEvent(NetworkEvent event) {
@@ -56,34 +58,18 @@ public class NetworkController {
         switch (event.getType()) {
             case WHO_IS_OUT_THERE:  // Existing users letting a new user know they are present
                 replyNetworkEvent(
-                        new NetworkEvent(NetworkEventType.RESPOND_PRESENCE, this.user),
+                        new NetworkEvent(NetworkEventType.RESPOND_PRESENCE, userService.getCurrentUser()),
                         payloadUser
                 );
                 break;
 
             case RESPOND_PRESENCE:  // New user adding existing users responding to their WHO_IS_OUT_THERE
             case NOTIFY_PRESENCE:   // Existing users adding a new (verified-pseudonym) user
-                nm.addActiveUser(payloadUser);
+                userService.addActiveUser(payloadUser);
                 break;
 
             case NOTIFY_ABSENCE:
-                nm.removeActiveUser(payloadUser);
-                ConsoleUI cui = ConsoleUI.getInstance();
-                MainController mc = MainController.getInstance();
-                ChatSessionController activeCSC = mc.getActiveChatSessionController();
-                if (payloadUser.equals(activeCSC.getRecipient())) {
-                    mc.handleUserAction(
-                            new UserAction(UserActionType.END_CHAT_SESSION, new UserActionPayload(this.user)));
-                    cui.setInChatSession(false);
-                }
-                break;
-
-            case CHECK_PSEUDONYM:
-                if (nm.pseudonymIsValid(payloadUser)) {
-                    ui.acceptPseudonym();
-                } else {
-                    ui.rejectPseudonym();
-                }
+                userService.removeActiveUser(payloadUser);
                 break;
 
             default:
@@ -92,7 +78,7 @@ public class NetworkController {
         }
     }
 
-    public void broadcastNetworkEvent(NetworkEvent event) {
+    public void broadcast(NetworkEvent event) {
         try {
             // Create UDP client with broadcast enabled
             DatagramSocket ds = new DatagramSocket();
@@ -144,7 +130,23 @@ public class NetworkController {
         }
     }
 
-    public void setUserInterface(UserInterface ui) { this.ui = ui; }
+    public void sendMessage(Message message, User to) {
+        try {
+            Socket connection = new Socket(to.getAddress(), to.getTcpPort());
+            OutputStream outputStream = connection.getOutputStream();
+            byte[] serializedMessage = Message.serialize(message);
+            outputStream.write(serializedMessage);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            // TODO: notify of failure to send (other user is offline)
+            e.printStackTrace();
+        }
+    }
 
-    public ObservableList<User> getActiveUsers() { return this.nm.getActiveUsers(); }
+    public void setUdpPort(int port) { userService.getCurrentUser().setUdpPort(port); }
+    public void setTcpPort(int port) { userService.getCurrentUser().setTcpPort(port); }
+
+    public void injectUserService(UserService userService) { this.userService = userService; }
+    public void injectChatService(ChatService chatService) { this.chatService = chatService; }
 }

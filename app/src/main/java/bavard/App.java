@@ -1,50 +1,79 @@
 package bavard;
 
-import bavard.chat.ChatReceptionHandler;
+import bavard.chat.ChatService;
+import bavard.db.MessageStore;
 import bavard.db.MessageStoreDatabase;
-import bavard.user.User;
-import bavard.user.UserIdentifier;
-import bavard.network.NetworkModel;
-import bavard.network.NetworkController;
-import bavard.ui.UserInterface;
-import bavard.ui.ConsoleUI;
-import bavard.ui.GraphicalUI;
+import bavard.network.NetworkService;
+import bavard.ui.MainController;
+import bavard.user.UserService;
+
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 
-import java.net.ServerSocket;
-import java.net.Socket;
+public class App extends Application {
 
-public class App {
-    public static void main(String[] args) {
-        User user = UserIdentifier.identifyUser();
-        user.setTcpPort(chooseTcpPort());
-        MessageStoreDatabase msdb = new MessageStoreDatabase();
-        NetworkModel nm = new NetworkModel(user);
-        NetworkController nc = new NetworkController(user, nm);
-        MainController mc = new MainController(user, nc);
-        UserInterface ui = new ConsoleUI(user, nc, mc);
-        nc.setUserInterface(ui);
+    private StackPane initApp() throws Exception {
+        MessageStore messageStore = new MessageStoreDatabase();
+        UserService userService = new UserService();
+        ChatService chatService = new ChatService();
+        NetworkService networkService = new NetworkService();
 
-//        ui.start();
+        // Inter-service injections
+        messageStore.injectChatService(chatService);
+
+        userService.injectNetworkService(networkService);
+
+        chatService.injectMessageStore(messageStore);
+        chatService.injectUserService(userService);
+        chatService.injectNetworkService(networkService);
+
+        networkService.injectUserService(userService);
+        networkService.injectChatService(chatService);
+
+        // Initialize services
+        messageStore.init();
+        userService.init();
+        chatService.init();
+        networkService.init();
+
+        // Load main view, get its controller, inject services and initialize
+        FXMLLoader mainViewLoader = new FXMLLoader(getClass().getResource("/bavard/fxml/MainView.fxml"));
+        StackPane mainView =  mainViewLoader.load();
+        MainController mainController = mainViewLoader.getController();
+
+        mainController.injectUserService(userService);
+        mainController.injectChatService(chatService);
+        mainController.injectNetworkService(networkService);
+        mainController.init();
+
+        return mainView;
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
         try {
-            Application.launch(GraphicalUI.class);
+            StackPane mainView = initApp();
+
+            Scene scene = new Scene(mainView);
+
+            primaryStage.setTitle("Bavard");
+            primaryStage.setScene(scene);
+            primaryStage.show();
         } catch (Exception e) {
+            // TODO: Give up, do nothing
             e.printStackTrace();
         }
     }
 
-    private static int chooseTcpPort() {
-        int tcpPort = 2000;
-        boolean availablePortfound = false;
-        while(!availablePortfound){
-            try {
-                ServerSocket ss = new ServerSocket(tcpPort);
-                availablePortfound = true;
-                ss.close();
-            } catch (Exception e) {
-                tcpPort++;
-            }
-        }
-        return tcpPort;
+    @Override
+    public void stop() {
+        System.exit(0);
+    }
+
+    public static void main(String[] args) {
+        launch();
     }
 }

@@ -6,12 +6,12 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.shape.Circle?>
 
-<AnchorPane fx:id="pseudonymModal" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" visible="false" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.ui.PseudonymModalController">
+<AnchorPane fx:id="pseudonymModalView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" visible="true" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.ui.PseudonymModalController">
    <children>
       <Circle fill="DODGERBLUE" onMouseClicked="#closePseudonymModal" radius="16.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0" />
       <Label alignment="CENTER" layoutX="126.0" layoutY="105.0" text="Enter your new pseudonym:" textAlignment="CENTER" />
       <TextField fx:id="pseudonymInput" layoutX="120.0" layoutY="137.0" />
-      <Button fx:id="pseudonymSubmit" layoutX="172.0" layoutY="177.0" mnemonicParsing="false" onAction="#changePseudonym" text="Submit" />
+      <Button onAction="#changePseudonym" layoutX="172.0" layoutY="177.0" mnemonicParsing="false" text="Submit" />
       <Label fx:id="errorMessage" alignment="CENTER" layoutX="64.0" layoutY="221.0" text="That pseudonym is already taken. Try another one." textFill="RED" visible="false" />
    </children>
 </AnchorPane>

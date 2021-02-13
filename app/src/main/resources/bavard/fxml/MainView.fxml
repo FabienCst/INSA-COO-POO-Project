@@ -13,18 +13,17 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Polygon?>
 
-<StackPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.MainController">
-<!--<AnchorPane prefHeight="640.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.MainController">-->
-<AnchorPane fx:id="mainWindow" prefHeight="640.0" prefWidth="800.0" visible="false">
+<StackPane fx:id="window" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.ui.MainController">
+<AnchorPane fx:id="mainView" prefHeight="640.0" prefWidth="800.0" visible="false">
    <children>
       <SplitPane dividerPositions="0.3" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
             <VBox prefHeight="398.0" prefWidth="152.0">
                <children>
-                  <HBox fx:id="profile" alignment="CENTER_LEFT" maxHeight="84.0" prefHeight="100.0" prefWidth="200.0" spacing="16.0" VBox.vgrow="ALWAYS">
+                  <HBox alignment="CENTER_LEFT" maxHeight="84.0" prefHeight="100.0" prefWidth="200.0" spacing="16.0" VBox.vgrow="ALWAYS">
                      <children>
                         <Circle fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Label fx:id="pseudonym" text="myPseudonym" />
+                        <Label fx:id="myPseudonym" text="sample" />
                         <MenuButton mnemonicParsing="false">
                           <items>
                             <MenuItem onAction="#openPseudonymModal" mnemonicParsing="false" text="Change pseudonym" />
@@ -42,14 +41,12 @@
                   </AnchorPane>
                </children>
             </VBox>
-            <StackPane prefHeight="150.0" prefWidth="200.0">
+            <StackPane fx:id="chatArea" prefHeight="150.0" prefWidth="200.0">
                <children>
                   <Polygon fill="DODGERBLUE" points="-50.0, 40.0, 50.0, 40.0, 0.0, -60.0" stroke="BLACK" strokeType="INSIDE" />
-                  <fx:include fx:id="chatView" source="ChatView.fxml" />
                </children>
             </StackPane>
          </items></SplitPane>
    </children>
 </AnchorPane>
-   <fx:include fx:id="pseudonymModal" source="PseudonymModal.fxml" visible="true"/>
 </StackPane>

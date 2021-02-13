@@ -1,38 +1,28 @@
 package bavard.chat;
 
 import bavard.user.User;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 
 public class ChatSession {
 
-    private User initiator;
-    private User recipient;
-    private ArrayList<TextMessage> messageHistory = new ArrayList<TextMessage>();
-    private static ChatSession instance;
+    private final User initiator;
+    private final User recipient;
+    private ObservableList<Message> messageHistory = FXCollections.observableArrayList();
 
     public ChatSession(User initiator, User recipient) {
         this.initiator = initiator;
         this.recipient = recipient;
-        instance = this;
     }
 
-    public static ChatSession getInstance() { return instance; }
+    public User getSender() { return initiator; }
+    public User getRecipient() { return recipient; }
+    public User getUserByUid(String uid) { return uid.equals(initiator.getUid()) ? initiator : recipient; }
 
-    public void addToMessageHistory(TextMessage msg) {
-        messageHistory.add(msg);
-    }
+    public ObservableList getMessageHistory() { return messageHistory; }
+    public void setMessageHistory(ArrayList<Message> retrievedMessageHistory) { messageHistory.addAll(retrievedMessageHistory); }
+    public void addToMessageHistory(Message newMessage) { messageHistory.add(newMessage); }
 
-    public void loadMessageHistory() {
-
-    }
-
-    public User getUserByUid(String uid) {
-        // TODO: properly
-        if (uid.equals("123")) {
-            return initiator;
-        } else {
-            return recipient;
-        }
-    }
 }

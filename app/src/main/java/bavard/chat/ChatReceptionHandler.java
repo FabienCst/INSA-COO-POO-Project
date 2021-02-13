@@ -1,50 +1,33 @@
 package bavard.chat;
 
-import bavard.MainController;
-import bavard.db.MessageStore;
-import bavard.db.MessageStoreDatabase;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 
 public class ChatReceptionHandler implements Runnable {
 
-    final Socket link;
-    private MessageStore ms;
+    private final Socket connection;
+    private ChatService chatService;
 
-    public ChatReceptionHandler(Socket link) {
-        this.link = link;
-        this.ms = MessageStoreDatabase.getInstance();
+    public ChatReceptionHandler(Socket connection, ChatService chatService) {
+        this.connection = connection;
+        this.chatService = chatService;
     }
 
     @Override
     public void run() {
         try {
-            InputStream is = link.getInputStream();
-            byte[] msg = new byte[65536];
+            InputStream is = connection.getInputStream();
+            byte[] messageBytes = new byte[65536];
 
             while (true) {
-                if (is.read(msg) > 0) {
-                    // Deseriaization
-                    ByteArrayInputStream bais = new ByteArrayInputStream(msg);
-                    ObjectInputStream ois = new ObjectInputStream(bais);
-                    TextMessage tmsg = (TextMessage) ois.readObject();
-                    ois.close();
-
-                    MainController mc = MainController.getInstance();
-                    ChatSessionController activeCSC = mc.getActiveChatSessionController();
-
-                    if (activeCSC == null) ms.saveMessage(tmsg);
-                    else {
-                        if (tmsg.getSender().equals(activeCSC.getRecipient())) {
-                            activeCSC.handleReceivedMessage(tmsg);
-                        }
-                        else ms.saveMessage(tmsg);
-                    }
+                if (is.read(messageBytes) > 0) {
+                    Message message = Message.deserialize(messageBytes);
+                    chatService.receiveMessage(message);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | IOException deserializeException) {
+            // Ignore this packet and wait for another
         }
     }
 

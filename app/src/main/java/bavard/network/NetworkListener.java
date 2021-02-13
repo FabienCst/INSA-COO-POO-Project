@@ -1,6 +1,6 @@
 package bavard.network;
 
-import bavard.user.User;
+import javafx.application.Platform;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,13 +10,7 @@ import java.net.SocketException;
 @SuppressWarnings("InfiniteLoopStatement")
 public class NetworkListener implements Runnable {
 
-    private NetworkController nc;
-    private User user;
-
-    public NetworkListener(NetworkController nc, User user) {
-        this.nc = nc;
-        this.user = user;
-    }
+    private NetworkService networkService;
 
     @Override
     public void run() {
@@ -33,9 +27,9 @@ public class NetworkListener implements Runnable {
                 NetworkEvent receivedEvent = NetworkEvent.deserialize(receptionBuffer.getData());
 
                 // Hand off handling to another thread to not miss new packets while processing
-                new Thread(() -> {
-                    nc.handleNetworkEvent(receivedEvent);
-                }).start();
+                Platform.runLater(() -> {
+                    networkService.handleNetworkEvent(receivedEvent);
+                });
             } catch (ClassNotFoundException | IOException deserializeException) {
                 // Ignore this packet and wait for another
             }
@@ -53,7 +47,7 @@ public class NetworkListener implements Runnable {
         while (!validPort) { // separate function using isPortAvailable (see slack) and int findAvailPort
             try {
                 ds = new DatagramSocket(port);
-                this.user.setUdpPort(port);
+                networkService.setUdpPort(port);
                 validPort = true;
                 // return ds
             } catch (SocketException se) {
@@ -68,4 +62,6 @@ public class NetworkListener implements Runnable {
     public void listen() {
         new Thread(this).start();
     }
+
+    public void injectNetworkService(NetworkService networkService) { this.networkService = networkService; }
 }

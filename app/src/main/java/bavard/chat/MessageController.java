@@ -8,7 +8,7 @@ public class MessageController {
     @FXML
     private Label messageText;
 
-    public void setMessageText(String text) {
+    public void setMessageTextTo(String text) {
         messageText.setText(text);
     }
 

@@ -9,19 +9,11 @@ import java.util.ArrayList;
 
 public class MessageStoreDatabase implements MessageStore {
 
-    private static MessageStoreDatabase instance = null;
+    private ChatService chatService;
     private Connection connection = null;
 
-    public static synchronized MessageStore getInstance() {
-        if (instance == null) {
-            instance = new MessageStoreDatabase();
-            instance.init();
-        }
-        return instance;
-    }
-
     // Get connection to the database or create one if it does not already exist
-    private void init() {
+    public void init() {
         try {
             connection = DriverManager.getConnection("jdbc:sqlite:store.db");
 
@@ -53,8 +45,6 @@ public class MessageStoreDatabase implements MessageStore {
         pstmt.setString(5, msg.getText());
 
         pstmt.execute();
-
-        System.out.println("You have new message(s) from "+msg.getSender().getPseudonym());
     }
 
     @Override
@@ -83,9 +73,10 @@ public class MessageStoreDatabase implements MessageStore {
         ResultSet rs = pstmt.executeQuery();
 
         // Parse results and instantiate each message to the correct type, then add to message history
+        ChatSession chatSession = chatService.getChatSession();
         while (rs.next()) {
-            User sender = ChatSession.getInstance().getUserByUid(rs.getString("sender_uid"));
-            User recipient = ChatSession.getInstance().getUserByUid(rs.getString("recipient_uid"));
+            User sender = chatSession.getUserByUid(rs.getString("sender_uid"));
+            User recipient = chatSession.getUserByUid(rs.getString("recipient_uid"));
 
             switch (rs.getString("type")) {
                 case "text":
@@ -111,4 +102,7 @@ public class MessageStoreDatabase implements MessageStore {
 
         return messageHistory;
     }
+
+    @Override
+    public void injectChatService(ChatService chatService) { this.chatService = chatService; }
 }
