@@ -1,6 +1,6 @@
-package bavard.network;
+package proxyserve.network;
 
-import bavard.user.User;
+import proxyserve.user.User;
 
 import java.io.*;
 
@@ -17,14 +17,6 @@ public class NetworkEvent implements Serializable {
     public NetworkEventType getType() { return this.event; }
 
     public User getPayload() { return this.payload; }
-
-    public void setEvent(NetworkEventType event) {
-        this.event = event;
-    }
-
-    public void setPayload(User payload) {
-        this.payload = payload;
-    }
 
     public static byte[] serialize(NetworkEvent event) {
         try {
