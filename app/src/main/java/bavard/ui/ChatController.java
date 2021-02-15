@@ -1,7 +1,10 @@
 package bavard.ui;
 
 import bavard.chat.*;
-import bavard.user.User;
+import bavard.user.ObservableUser;
+
+import shared.Message;
+import shared.TextMessage;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,12 +42,12 @@ public class ChatController implements Initializable {
                         super.updateItem(message, empty);
                         if (message != null && message instanceof TextMessage) {
                             try {
-                                FXMLLoader messageloader = new FXMLLoader(getClass().getResource("/bavard/fxml/MessageView.fxml"));
-                                HBox messageBubble = messageloader.load();
-                                MessageController messageController = messageloader.getController();
+                                FXMLLoader messageLoader = new FXMLLoader(getClass().getResource("/bavard/fxml/MessageView.fxml"));
+                                HBox messageBubble = messageLoader.load();
+                                MessageController messageController = messageLoader.getController();
 
                                 // TODO: properly
-                                if (message.getSender().equals(chatService.getChatSession().getRecipient())) {
+                                if (message.getSender().equals(chatService.getChatSession().getRecipient().getSharedRepresentation())) {
                                     messageBubble.setAlignment(Pos.CENTER_LEFT);
                                 }
                                 messageController.setMessageTextTo(((TextMessage) message).getText());
@@ -54,6 +57,8 @@ public class ChatController implements Initializable {
                                 // TODO: something?
                                 ioe.printStackTrace();
                             }
+                        } else {
+                            setGraphic(null);
                         }
                     }
                 };
@@ -65,16 +70,16 @@ public class ChatController implements Initializable {
         String text = textInputField.getText();
         if (!text.isEmpty()) {
             ChatSession chatSession = chatService.getChatSession();
-            Message message = new TextMessage(chatSession.getSender(), chatSession.getRecipient(), OffsetDateTime.now(), text);
+            Message message = new TextMessage(chatSession.getSender().getSharedRepresentation(), chatSession.getRecipient().getSharedRepresentation(), OffsetDateTime.now(), text);
             chatService.sendMessage(message);
             textInputField.clear();
             messageList.scrollTo(messageList.getItems().size());
         }
     }
 
-    public void startConversationWith(User user) {
+    public void startConversationWith(ObservableUser user) {
+        chatService.endCurrentConversation();
         chatService.startConversationWith(user);
-        // TODO: theirPseudonym.setText(user.getPseudonym());
         theirPseudonym.textProperty().bind(user.getObservablePseudonym());
         messageList.setItems(chatService.getChatSession().getMessageHistory());
         messageList.scrollTo(messageList.getItems().size());

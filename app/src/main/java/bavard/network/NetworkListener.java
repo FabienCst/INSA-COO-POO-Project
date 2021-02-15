@@ -1,5 +1,7 @@
 package bavard.network;
 
+import shared.NetworkEvent;
+
 import javafx.application.Platform;
 
 import java.io.IOException;

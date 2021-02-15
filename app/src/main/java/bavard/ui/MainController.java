@@ -2,7 +2,7 @@ package bavard.ui;
 
 import bavard.chat.ChatService;
 import bavard.network.NetworkService;
-import bavard.user.User;
+import bavard.user.ObservableUser;
 import bavard.user.UserService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -34,16 +34,16 @@ public class MainController implements Initializable {
     @FXML private StackPane chatArea;
     @FXML private AnchorPane mainView;
     @FXML private Label myPseudonym;
-    @FXML private ListView<User> activeUserList;
+    @FXML private ListView<ObservableUser> activeUserList;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        activeUserList.setCellFactory(new Callback<ListView<User>, ListCell<User>>() {
+        activeUserList.setCellFactory(new Callback<ListView<ObservableUser>, ListCell<ObservableUser>>() {
             @Override
-            public ListCell<User> call(ListView<User> param) {
-                return new ListCell<User>() {
+            public ListCell<ObservableUser> call(ListView<ObservableUser> param) {
+                return new ListCell<ObservableUser>() {
                     @Override
-                    public void updateItem(User user, boolean empty) {
+                    public void updateItem(ObservableUser user, boolean empty) {
                         super.updateItem(user, empty);
                         if (user != null) { setText(user.getPseudonym()); }
                         else { setText(null); }
@@ -81,7 +81,7 @@ public class MainController implements Initializable {
     public void setMyPseudonym() { myPseudonym.setText(userService.getCurrentUser().getPseudonym()); }
 
     public void handleUserSelection(MouseEvent mouseEvent) {
-        User selectedUser = activeUserList.getSelectionModel().getSelectedItem();
+        ObservableUser selectedUser = activeUserList.getSelectionModel().getSelectedItem();
         activeUserList.getSelectionModel().clearSelection();
         if (selectedUser != null) {
             chatController.startConversationWith(selectedUser);

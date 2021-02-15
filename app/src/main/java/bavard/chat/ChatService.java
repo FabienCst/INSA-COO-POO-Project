@@ -2,8 +2,11 @@ package bavard.chat;
 
 import bavard.db.MessageStore;
 import bavard.network.NetworkService;
-import bavard.user.User;
+import bavard.user.ObservableUser;
 import bavard.user.UserService;
+
+import shared.Message;
+import shared.TextMessage;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,7 +24,7 @@ public class ChatService {
 
     public ChatSession getChatSession() { return chatSession; }
 
-    public void startConversationWith(User user) {
+    public void startConversationWith(ObservableUser user) {
         chatSession = new ChatSession(userService.getCurrentUser(), user);
         try {
             ArrayList<Message> retrievedMessages = messageStore.getMessagesBetween(userService.getCurrentUser(), user);
@@ -57,7 +60,7 @@ public class ChatService {
         // TODO: reconsider with an order that makes more sense
         // TODO: separate MessageStore part out into another function
 
-        if (chatSession != null) {
+        if (chatSession != null && message.getSender().equals(chatSession.getRecipient().getSharedRepresentation())) {
             chatSession.addToMessageHistory(message);
         }
 

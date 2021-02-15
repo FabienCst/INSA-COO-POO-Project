@@ -1,9 +1,11 @@
 package bavard.ui;
 
 import bavard.network.NetworkService;
-import bavard.network.NetworkEvent;
-import bavard.network.NetworkEventType;
 import bavard.user.UserService;
+
+import shared.NetworkEvent;
+import shared.NetworkEventType;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -28,7 +30,7 @@ public class PseudonymModalController {
 
             // Let existing users know your new pseudonym
             networkService.broadcast(
-                    new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, userService.getCurrentUser())
+                    new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, userService.getCurrentUser().getSharedRepresentation())
             );
 
             mainController.setMyPseudonym();

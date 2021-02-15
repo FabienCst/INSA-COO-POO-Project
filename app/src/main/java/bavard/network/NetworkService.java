@@ -1,9 +1,14 @@
 package bavard.network;
 
-import bavard.chat.Message;
 import bavard.chat.ChatReceptionServer;
 import bavard.chat.ChatService;
-import bavard.user.*;
+import bavard.user.ObservableUser;
+import bavard.user.UserService;
+
+import shared.Message;
+import shared.NetworkEvent;
+import shared.NetworkEventType;
+import shared.User;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,13 +48,13 @@ public class NetworkService {
 
         // Before shutting down let everyone know you will no longer be active on the network
         Thread notifyOfDeparture = new Thread(() -> {
-            broadcast(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, userService.getCurrentUser()));
+            broadcast(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, userService.getCurrentUser().getSharedRepresentation()));
         });
         Runtime.getRuntime().addShutdownHook(notifyOfDeparture);
 
         // Start building a list of active users by asking the network, "Who is out there?"
         broadcast(
-                new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, userService.getCurrentUser())
+                new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, userService.getCurrentUser().getSharedRepresentation())
         );
     }
 
@@ -59,7 +64,7 @@ public class NetworkService {
         switch (event.getType()) {
             case WHO_IS_OUT_THERE:  // Existing users letting a new user know they are present
                 replyNetworkEvent(
-                        new NetworkEvent(NetworkEventType.RESPOND_PRESENCE, userService.getCurrentUser()),
+                        new NetworkEvent(NetworkEventType.RESPOND_PRESENCE, userService.getCurrentUser().getSharedRepresentation()),
                         payloadUser
                 );
                 break;
@@ -111,10 +116,12 @@ public class NetworkService {
 
         try {
             Socket commandConnection = proxyConnection.getCommandConnection();
-            OutputStream outputStream = commandConnection.getOutputStream();
-            byte[] serializedNetworkEvent = NetworkEvent.serialize(event);
-            outputStream.write(serializedNetworkEvent);
-            outputStream.flush();
+            if (commandConnection != null) {
+                OutputStream outputStream = commandConnection.getOutputStream();
+                byte[] serializedNetworkEvent = NetworkEvent.serialize(event);
+                outputStream.write(serializedNetworkEvent);
+                outputStream.flush();
+            }
         } catch (IOException ioe) {
             // Ignore and move on to better things
         }
@@ -141,7 +148,7 @@ public class NetworkService {
         }
     }
 
-    public void sendMessage(Message message, User to) throws IOException {
+    public void sendMessage(Message message, ObservableUser to) throws IOException {
         if (to.getTcpPort() == 7777) {
             Socket messageConnectionToRecipient = proxyConnection.getMessageConnection();
             OutputStream outputStream = messageConnectionToRecipient.getOutputStream();

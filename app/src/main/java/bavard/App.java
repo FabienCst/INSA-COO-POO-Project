@@ -24,8 +24,6 @@ public class App extends Application {
         // Inter-service injections
         messageStore.injectChatService(chatService);
 
-        userService.injectNetworkService(networkService);
-
         chatService.injectMessageStore(messageStore);
         chatService.injectUserService(userService);
         chatService.injectNetworkService(networkService);

@@ -6,9 +6,11 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import shared.NetworkEvent;
+import shared.Message;
+import shared.TextMessage;
+
 import bavard.chat.ChatService;
-import bavard.chat.Message;
-import bavard.chat.TextMessage;
 import bavard.user.UserService;
 import javafx.application.Platform;
 
@@ -54,7 +56,7 @@ public class ProxyConnection {
             Socket mesConnection = new Socket(InetAddress.getLoopbackAddress(), 7766);
             messageConnection = mesConnection;
 
-            Message dummy = new TextMessage(userService.getCurrentUser(), null, null, null);
+            Message dummy = new TextMessage(userService.getCurrentUser().getSharedRepresentation(), null, null, null);
             OutputStream dummyOutputStream = messageConnection.getOutputStream();
             dummyOutputStream.write(Message.serialize(dummy));
             dummyOutputStream.flush();

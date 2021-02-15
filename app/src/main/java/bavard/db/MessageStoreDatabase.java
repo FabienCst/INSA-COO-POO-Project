@@ -1,7 +1,10 @@
 package bavard.db;
 
 import bavard.chat.*;
-import bavard.user.User;
+import bavard.user.ObservableUser;
+
+import shared.Message;
+import shared.TextMessage;
 
 import java.sql.*;
 import java.time.OffsetDateTime;
@@ -58,7 +61,7 @@ public class MessageStoreDatabase implements MessageStore {
     }
 
     @Override
-    public ArrayList<Message> getMessagesBetween(User user1, User user2) throws SQLException {
+    public ArrayList<Message> getMessagesBetween(ObservableUser user1, ObservableUser user2) throws SQLException {
         ArrayList<Message> messageHistory = new ArrayList<>();
 
         String sql = "SELECT sender_uid, recipient_uid, datetime, type, content FROM messages "
@@ -75,8 +78,8 @@ public class MessageStoreDatabase implements MessageStore {
         // Parse results and instantiate each message to the correct type, then add to message history
         ChatSession chatSession = chatService.getChatSession();
         while (rs.next()) {
-            User sender = chatSession.getUserByUid(rs.getString("sender_uid"));
-            User recipient = chatSession.getUserByUid(rs.getString("recipient_uid"));
+            ObservableUser sender = chatSession.getUserByUid(rs.getString("sender_uid"));
+            ObservableUser recipient = chatSession.getUserByUid(rs.getString("recipient_uid"));
 
             switch (rs.getString("type")) {
                 case "text":

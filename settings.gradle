@@ -10,3 +10,5 @@
 rootProject.name = 'bavard'
 include('app')
 include('proxy')
+include('shared')
+
