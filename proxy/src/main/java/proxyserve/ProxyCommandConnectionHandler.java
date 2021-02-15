@@ -1,8 +1,8 @@
 package proxyserve;
 
-import bavard.network.NetworkEvent;
-import bavard.network.NetworkEventType;
-import bavard.user.User;
+import shared.NetworkEvent;
+import shared.NetworkEventType;
+import shared.User;
 
 import java.io.IOException;
 import java.io.InputStream;

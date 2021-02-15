@@ -3,7 +3,7 @@ package proxyserve;
 import java.net.Socket;
 import java.util.HashMap;
 
-import bavard.user.User;
+import shared.User;
 
 public class Router {
 
@@ -33,7 +33,6 @@ public class Router {
         synchronized (lock) {
             RouterEntry routerEntry = routingMap.get(payloadUser.getUid());
             if (routerEntry == null) {
-                payloadUser.setObservablePseudonym();
                 RouterEntry newRouterEntry = new RouterEntry(payloadUser, connection, null);
                 routingMap.put(payloadUser.getUid(), newRouterEntry);
             } else {
@@ -46,7 +45,6 @@ public class Router {
         synchronized (lock) {
             RouterEntry routerEntry = routingMap.get(user.getUid());
             if (routerEntry == null) {
-                user.setObservablePseudonym();
                 RouterEntry newRouterEntry = new RouterEntry(user, null, connection);
                 routingMap.put(user.getUid(), newRouterEntry);
             } else {

@@ -1,5 +1,6 @@
 plugins {
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 repositories {
@@ -7,17 +8,12 @@ repositories {
 }
 
 dependencies {
-    implementation project(':app')
-
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-}
-
-test {
-    useJUnitPlatform()
+    implementation project(':shared')
 }
 
 application {
     // Define the main class for the application.
     mainClass = 'proxyserve.Proxy'
 }
+
+mainClassName = 'proxyserve.Proxy'

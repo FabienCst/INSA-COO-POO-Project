@@ -1,6 +1,6 @@
 package proxyserve;
 
-import bavard.chat.Message;
+import shared.Message;
 
 import java.io.IOException;
 import java.io.InputStream;

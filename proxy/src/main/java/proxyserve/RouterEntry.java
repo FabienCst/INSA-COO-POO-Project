@@ -2,7 +2,7 @@ package proxyserve;
 
 import java.net.Socket;
 
-import bavard.user.User;
+import shared.User;
 
 public class RouterEntry {
 
