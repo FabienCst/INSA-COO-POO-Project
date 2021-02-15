@@ -32,8 +32,12 @@ public class UserService {
 
             int at = activeUsers.indexOf(user);
             if (at != -1) {
-                activeUsers.get(at).setPseudonym(user.getPseudonym());
-                activeUsers.set(at, user);
+                boolean sameUserFromProxy = activeUsers.get(at).getTcpPort() != user.getTcpPort() || !activeUsers.get(at).getAddress().equals(user.getAddress()) ;
+                if (sameUserFromProxy) { return; }
+                else {
+                    activeUsers.get(at).setPseudonym(user.getPseudonym());
+                    activeUsers.set(at, user);
+                }
             } else {
                 activeUsers.add(user);
             }

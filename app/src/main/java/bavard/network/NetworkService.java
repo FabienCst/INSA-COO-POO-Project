@@ -38,6 +38,7 @@ public class NetworkService {
         proxyConnection = new ProxyConnection();
         proxyConnection.injectNetworkService(this);
         proxyConnection.injectChatService(chatService);
+        proxyConnection.injectUserService(userService);
         proxyConnection.connect();
 
         // Before shutting down let everyone know you will no longer be active on the network
@@ -107,6 +108,16 @@ public class NetworkService {
         } catch (IOException ioe) {
             // Ignore and move on to better things
         }
+
+        try {
+            Socket commandConnection = proxyConnection.getCommandConnection();
+            OutputStream outputStream = commandConnection.getOutputStream();
+            byte[] serializedNetworkEvent = NetworkEvent.serialize(event);
+            outputStream.write(serializedNetworkEvent);
+            outputStream.flush();
+        } catch (IOException ioe) {
+            // Ignore and move on to better things
+        }
     }
 
     public void replyNetworkEvent(NetworkEvent event, User to) {
@@ -130,17 +141,20 @@ public class NetworkService {
         }
     }
 
-    public void sendMessage(Message message, User to) {
-        try {
+    public void sendMessage(Message message, User to) throws IOException {
+        if (to.getTcpPort() == 7777) {
+            Socket messageConnectionToRecipient = proxyConnection.getMessageConnection();
+            OutputStream outputStream = messageConnectionToRecipient.getOutputStream();
+            byte[] serializedMessage = Message.serialize(message);
+            outputStream.write(serializedMessage);
+            outputStream.flush();
+        } else {
             Socket connection = new Socket(to.getAddress(), to.getTcpPort());
             OutputStream outputStream = connection.getOutputStream();
             byte[] serializedMessage = Message.serialize(message);
             outputStream.write(serializedMessage);
             outputStream.flush();
             outputStream.close();
-        } catch (IOException e) {
-            // TODO: notify of failure to send (other user is offline)
-            e.printStackTrace();
         }
     }
 

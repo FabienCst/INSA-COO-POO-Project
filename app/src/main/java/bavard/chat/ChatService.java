@@ -5,6 +5,7 @@ import bavard.network.NetworkService;
 import bavard.user.User;
 import bavard.user.UserService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -34,20 +35,22 @@ public class ChatService {
     public void endCurrentConversation() { chatSession = null; }
 
     public void sendMessage(Message message) {
-        // TODO: reconsider with an order that makes more sense (what if other user is offline?)
-        chatSession.addToMessageHistory(message);
+        try {
+            networkService.sendMessage(message, chatSession.getRecipient());
 
-        // TODO: will ALWAYS be a Message after deserialization, check the message type instead
-        if (message instanceof TextMessage) {
-            try {
-                messageStore.saveMessage((TextMessage) message);
-            } catch (SQLException sqle) {
-                // TODO: oops, couldn't save message to MessageStore
-                sqle.printStackTrace();
+            chatSession.addToMessageHistory(message);
+
+            if (message instanceof TextMessage) {
+                try {
+                    messageStore.saveMessage((TextMessage) message);
+                } catch (SQLException sqle) {
+                    // TODO: oops, couldn't save message to MessageStore
+                    sqle.printStackTrace();
+                }
             }
+        } catch (IOException ioe) {
+            // TODO: handle case when ChatView is open with a user who is offline
         }
-
-        networkService.sendMessage(message, chatSession.getRecipient());
     }
 
     public void receiveMessage(Message message) {

@@ -40,6 +40,7 @@ public class User implements Serializable {
     public String getUid() { return uid; }
 
     public InetAddress getAddress() { return address; }
+    public void setAddress(InetAddress address) { this.address = address; }
 
     public int getUdpPort() { return this.udpPort; }
     public void setUdpPort(int udpPort) { this.udpPort = udpPort; }
