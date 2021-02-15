@@ -11,6 +11,7 @@ import shared.TextMessage;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javafx.application.Platform;
 
 public class ChatService {
 
@@ -61,7 +62,9 @@ public class ChatService {
         // TODO: separate MessageStore part out into another function
 
         if (chatSession != null && message.getSender().equals(chatSession.getRecipient().getSharedRepresentation())) {
-            chatSession.addToMessageHistory(message);
+            Platform.runLater(() -> {
+                chatSession.addToMessageHistory(message);
+            });
         }
 
         if (message instanceof TextMessage) {

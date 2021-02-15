@@ -47,7 +47,7 @@ public class ChatController implements Initializable {
                                 MessageController messageController = messageLoader.getController();
 
                                 // TODO: properly
-                                if (message.getSender().equals(chatService.getChatSession().getRecipient().getSharedRepresentation())) {
+                                if (message.getSender().getUid().equals(chatService.getChatSession().getRecipient().getUid())) {
                                     messageBubble.setAlignment(Pos.CENTER_LEFT);
                                 }
                                 messageController.setMessageTextTo(((TextMessage) message).getText());
