@@ -1,8 +1,7 @@
 package proxyserve.network;
 
 import proxyserve.MainController;
-import proxyserve.message.Message;
-import proxyserve.network.NetworkEvent;
+import bavard.network.NetworkEvent;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -37,7 +36,7 @@ public class NetworkEventHandler implements Runnable {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //
         }
     }
 }

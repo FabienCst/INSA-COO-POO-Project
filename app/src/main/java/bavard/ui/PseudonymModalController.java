@@ -37,6 +37,11 @@ public class PseudonymModalController {
             nc.broadcastNetworkEvent(
                     new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, user)
             );
+            nc.broadcastNetworkEventToServer(
+                    new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, user)
+            );
+
+            System.out.println("Je suis passé par ici");
 
             MainController mc = MainController.getInstance();
             mc.setPseudonym(newPseudonym);

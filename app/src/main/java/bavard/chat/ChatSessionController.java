@@ -1,9 +1,11 @@
 package bavard.chat;
 
+import bavard.server.ServerController;
 import bavard.user.User;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.time.format.DateTimeFormatter;
 
@@ -36,12 +38,21 @@ public class ChatSessionController {
     public void sendMessage(TextMessage msg) {
         cs.addToMessageHistory(msg);
         try {
-            Socket socket = new Socket(recipient.getAddress(), recipient.getTcpPort());
-            OutputStream os = socket.getOutputStream();
-            byte[] serializedMsg = TextMessage.serialize(msg);
-            os.write(serializedMsg);
-            os.flush();
-            os.close();
+            ServerController sc = ServerController.getInstance();
+            if (recipient.getAddress() == InetAddress.getByName(sc.getServerAddress())) {
+                OutputStream os = sc.getMessageSocket().getOutputStream();
+                byte[] serializedMsg = TextMessage.serialize(msg);
+                os.write(serializedMsg);
+                os.flush();
+            }
+            else {
+                Socket socket = new Socket(recipient.getAddress(), recipient.getTcpPort());
+                OutputStream os = socket.getOutputStream();
+                byte[] serializedMsg = TextMessage.serialize(msg);
+                os.write(serializedMsg);
+                os.flush();
+                os.close();
+            }
 
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
             System.out.println("me at "+dtf.format(msg.getDatetime())+" : "+msg.getText());

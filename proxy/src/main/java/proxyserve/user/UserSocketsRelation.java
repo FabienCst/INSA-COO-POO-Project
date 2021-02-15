@@ -1,12 +1,17 @@
 package proxyserve.user;
 
 import java.net.Socket;
+import bavard.user.User;
 
 public class UserSocketsRelation {
 
     private User user;
     private Socket messageSocket;
     private Socket eventSocket;
+
+    public UserSocketsRelation() {
+
+    }
 
     public UserSocketsRelation(User user, Socket eventSocket) {
         this.user = user;

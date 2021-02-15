@@ -2,6 +2,7 @@ package bavard.network;
 
 import bavard.MainController;
 import bavard.chat.ChatSessionController;
+import bavard.server.ServerController;
 import bavard.ui.ConsoleUI;
 import bavard.ui.UserInterface;
 import bavard.user.User;
@@ -11,6 +12,7 @@ import bavard.user.UserActionType;
 
 import javafx.collections.ObservableList;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -32,7 +34,8 @@ public class NetworkController {
 
         // Before shutting down let everyone know you will no longer be active on the network
         Thread notifyOfDeparture = new Thread(() -> {
-            broadcastNetworkEvent(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, this.user));
+            //broadcastNetworkEvent(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, this.user));
+            broadcastNetworkEventToServer(new NetworkEvent(NetworkEventType.NOTIFY_ABSENCE, this.user));
         });
         Runtime.getRuntime().addShutdownHook(notifyOfDeparture);
 
@@ -41,7 +44,10 @@ public class NetworkController {
         this.nl.listen();
 
         // Start building a list of active users by asking the network, "Who is out there?"
-        broadcastNetworkEvent(
+//        broadcastNetworkEvent(
+//                new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, this.user)
+//        );
+        broadcastNetworkEventToServer(
                 new NetworkEvent(NetworkEventType.WHO_IS_OUT_THERE, this.user)
         );
     }
@@ -89,6 +95,18 @@ public class NetworkController {
             default:
                 // Ignore
                 break;
+        }
+    }
+
+    public void broadcastNetworkEventToServer(NetworkEvent event) {
+        try {
+            ServerController sc = ServerController.getInstance();
+            OutputStream os = sc.getEventSocket().getOutputStream();
+            byte[] serializedEvent = NetworkEvent.serialize(event);
+            os.write(serializedEvent);
+            os.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

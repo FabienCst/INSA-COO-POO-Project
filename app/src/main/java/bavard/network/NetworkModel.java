@@ -39,8 +39,17 @@ public class NetworkModel {
 
         synchronized (lock) {
             int at = activeUsers.indexOf(user);
+//            if (at != -1) {
+//                activeUsers.set(at, user);
+//            } else {
+//                activeUsers.add(user);
+//            }
             if (at != -1) {
-                activeUsers.set(at, user);
+                boolean sameUserFromProxy = activeUsers.get(at).getTcpPort() == 3000;
+                if (sameUserFromProxy) { return; }
+                else {
+                    activeUsers.set(at, user);
+                }
             } else {
                 activeUsers.add(user);
             }

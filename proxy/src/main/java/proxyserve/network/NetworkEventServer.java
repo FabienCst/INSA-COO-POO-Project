@@ -21,10 +21,10 @@ public class NetworkEventServer implements Runnable {
             System.out.println("Awaiting network event on port "+this.tcpPortCommand);
             while(true) {
                 Socket link = ss.accept();
-                new Thread(new MessageHandler(link)).start();
+                new Thread(new NetworkEventHandler(link)).start();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            //
         }
     }
 

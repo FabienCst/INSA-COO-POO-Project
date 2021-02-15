@@ -2,6 +2,7 @@ package bavard;
 
 import bavard.chat.ChatReceptionHandler;
 import bavard.db.MessageStoreDatabase;
+import bavard.server.ServerController;
 import bavard.user.User;
 import bavard.user.UserIdentifier;
 import bavard.network.NetworkModel;
@@ -19,18 +20,19 @@ public class App {
         User user = UserIdentifier.identifyUser();
         user.setTcpPort(chooseTcpPort());
         MessageStoreDatabase msdb = new MessageStoreDatabase();
+        ServerController sc = new ServerController();
         NetworkModel nm = new NetworkModel(user);
         NetworkController nc = new NetworkController(user, nm);
         MainController mc = new MainController(user, nc);
         UserInterface ui = new ConsoleUI(user, nc, mc);
         nc.setUserInterface(ui);
 
-//        ui.start();
-        try {
-            Application.launch(GraphicalUI.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        ui.start();
+//        try {
+//            Application.launch(GraphicalUI.class);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static int chooseTcpPort() {

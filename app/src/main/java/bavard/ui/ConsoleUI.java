@@ -7,6 +7,7 @@ import bavard.chat.Message;
 import bavard.chat.TextMessage;
 import bavard.network.NetworkEvent;
 import bavard.network.NetworkEventType;
+import bavard.server.ServerController;
 import bavard.user.User;
 import bavard.network.NetworkController;
 import bavard.MainController;
@@ -53,9 +54,15 @@ public class ConsoleUI implements UserInterface {
         requestPseudonym();
 
         // Let existing users know you are now present with your unique pseudonym
-        nc.broadcastNetworkEvent(
+//        nc.broadcastNetworkEvent(
+//                new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, this.user)
+//        );
+        nc.broadcastNetworkEventToServer(
                 new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, this.user)
         );
+        TextMessage initMsg = new TextMessage(this.user, null, null,"INIT SOCKET MESSAGE");
+        ServerController sc = ServerController.getInstance();
+        sc.initMessageSocket(initMsg);
 
         showUI();
     }
@@ -186,9 +193,15 @@ public class ConsoleUI implements UserInterface {
                     System.out.println("You are now called " + this.user.getPseudonym());
 
                     // Let existing users know your new pseudonym
-                    nc.broadcastNetworkEvent(
-                            new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, this.user)
+//                    nc.broadcastNetworkEvent(
+//                            new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, this.user)
+//                    );
+                    nc.broadcastNetworkEventToServer(
+                            new NetworkEvent(NetworkEventType.NOTIFY_PRESENCE, user)
                     );
+                    TextMessage initMsg = new TextMessage(this.user, null, null,"INIT SOCKET MESSAGE");
+                    ServerController sc = ServerController.getInstance();
+                    sc.initMessageSocket(initMsg);
                     break;
 
                 case "q":
