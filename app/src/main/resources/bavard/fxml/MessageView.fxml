@@ -3,15 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.shape.Circle?>
 
-<HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/11.0.1" fx:controller="bavard.chat.MessageController" xmlns:fx="http://javafx.com/fxml/1">
+<HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="480.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.chat.MessageController">
    <children>
       <Label fx:id="messageText" alignment="CENTER" text="dummy" />
-      <Circle fill="DODGERBLUE" radius="40.0" stroke="BLACK" strokeType="INSIDE">
-         <HBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </HBox.margin>
-      </Circle>
    </children>
+   <padding>
+      <Insets bottom="16.0" left="24.0" right="24.0" top="16.0" />
+   </padding>
 </HBox>

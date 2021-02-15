@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.Polygon?>
+<?import javafx.scene.text.Font?>
 
 <StackPane fx:id="window" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.ui.MainController">
 <AnchorPane fx:id="mainView" prefHeight="640.0" prefWidth="800.0" visible="false">
@@ -20,13 +19,15 @@
          <items>
             <VBox prefHeight="398.0" prefWidth="152.0">
                <children>
-                  <HBox alignment="CENTER_LEFT" maxHeight="84.0" prefHeight="100.0" prefWidth="200.0" spacing="16.0" VBox.vgrow="ALWAYS">
+                  <HBox alignment="CENTER" maxHeight="84.0" prefHeight="100.0" prefWidth="200.0" spacing="16.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <Circle fill="DODGERBLUE" radius="24.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Label fx:id="myPseudonym" text="sample" />
+                        <Label fx:id="myPseudonym" text="sample">
+                              <font>
+                                 <Font name="System Italic" size="18.0" />
+                              </font></Label>
                         <MenuButton mnemonicParsing="false">
                           <items>
-                            <MenuItem onAction="#openPseudonymModal" mnemonicParsing="false" text="Change pseudonym" />
+                            <MenuItem mnemonicParsing="false" onAction="#openPseudonymModal" text="Change pseudonym" />
                           </items>
                         </MenuButton>
                      </children>
@@ -36,16 +37,15 @@
                   </HBox>
                   <AnchorPane VBox.vgrow="ALWAYS">
                      <children>
-                        <ListView fx:id="activeUserList" onMouseClicked="#handleUserSelection" prefHeight="600.0" prefWidth="235.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <ListView fx:id="activeUserList" onMouseClicked="#handleUserSelection" prefHeight="600.0" prefWidth="235.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <padding>
+                                 <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+                              </padding></ListView>
                      </children>
                   </AnchorPane>
                </children>
             </VBox>
-            <StackPane fx:id="chatArea" prefHeight="150.0" prefWidth="200.0">
-               <children>
-                  <Polygon fill="DODGERBLUE" points="-50.0, 40.0, 50.0, 40.0, 0.0, -60.0" stroke="BLACK" strokeType="INSIDE" />
-               </children>
-            </StackPane>
+            <StackPane fx:id="chatArea" />
          </items></SplitPane>
    </children>
 </AnchorPane>

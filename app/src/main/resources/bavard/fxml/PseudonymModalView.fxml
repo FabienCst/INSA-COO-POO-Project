@@ -4,14 +4,20 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
 
-<AnchorPane fx:id="pseudonymModalView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" visible="true" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.ui.PseudonymModalController">
+<AnchorPane fx:id="pseudonymModalView" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: WHITE; -fx-border-width: 2; -fx-border-color: LIGHTGRAY;" visible="true" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bavard.ui.PseudonymModalController">
    <children>
-      <Circle fill="DODGERBLUE" onMouseClicked="#closePseudonymModal" radius="16.0" stroke="BLACK" strokeType="INSIDE" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0" />
       <Label alignment="CENTER" layoutX="126.0" layoutY="105.0" text="Enter your new pseudonym:" textAlignment="CENTER" />
       <TextField fx:id="pseudonymInput" layoutX="120.0" layoutY="137.0" />
-      <Button onAction="#changePseudonym" layoutX="172.0" layoutY="177.0" mnemonicParsing="false" text="Submit" />
+      <Button layoutX="172.0" layoutY="177.0" mnemonicParsing="false" onAction="#changePseudonym" text="Submit" />
       <Label fx:id="errorMessage" alignment="CENTER" layoutX="64.0" layoutY="221.0" text="That pseudonym is already taken. Try another one." textFill="RED" visible="false" />
+      <StackPane layoutX="357.0" layoutY="31.0" onMouseClicked="#closePseudonymModal">
+         <children>
+            <Line endX="10.0" rotate="45.0" startX="-10.0" strokeWidth="2.0" />
+            <Line endX="10.0" rotate="-45.0" startX="-10.0" strokeWidth="2.0" />
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>
