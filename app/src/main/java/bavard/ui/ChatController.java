@@ -50,7 +50,7 @@ public class ChatController implements Initializable {
                                 if (message.getSender().getUid().equals(chatService.getChatSession().getRecipient().getUid())) {
                                     messageBubble.setAlignment(Pos.CENTER_LEFT);
                                 }
-                                messageController.setMessageTextTo(((TextMessage) message).getText());
+                                messageController.setMessageTextTo(((TextMessage) message).getText(), ((TextMessage) message).getDatetime());
 
                                 setGraphic(messageBubble);
                             } catch (IOException ioe) {
